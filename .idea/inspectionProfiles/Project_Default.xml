@@ -1,0 +1,130 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="1">
+            <item index="0" class="java.lang.String" itemvalue="nav-item" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="8">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="p" />
+            <item index="7" class="java.lang.String" itemvalue="style" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="72">
+            <item index="0" class="java.lang.String" itemvalue="hiredis" />
+            <item index="1" class="java.lang.String" itemvalue="amqp" />
+            <item index="2" class="java.lang.String" itemvalue="Django" />
+            <item index="3" class="java.lang.String" itemvalue="psycopg2" />
+            <item index="4" class="java.lang.String" itemvalue="Pillow" />
+            <item index="5" class="java.lang.String" itemvalue="graphql-relay" />
+            <item index="6" class="java.lang.String" itemvalue="pusher" />
+            <item index="7" class="java.lang.String" itemvalue="tzlocal" />
+            <item index="8" class="java.lang.String" itemvalue="Automat" />
+            <item index="9" class="java.lang.String" itemvalue="psycopg2-binary" />
+            <item index="10" class="java.lang.String" itemvalue="python-dotenv" />
+            <item index="11" class="java.lang.String" itemvalue="promise" />
+            <item index="12" class="java.lang.String" itemvalue="ndg-httpsclient" />
+            <item index="13" class="java.lang.String" itemvalue="pycparser" />
+            <item index="14" class="java.lang.String" itemvalue="constantly" />
+            <item index="15" class="java.lang.String" itemvalue="redis" />
+            <item index="16" class="java.lang.String" itemvalue="graphene-django" />
+            <item index="17" class="java.lang.String" itemvalue="pyasn1-modules" />
+            <item index="18" class="java.lang.String" itemvalue="PyNaCl" />
+            <item index="19" class="java.lang.String" itemvalue="certifi" />
+            <item index="20" class="java.lang.String" itemvalue="daphne" />
+            <item index="21" class="java.lang.String" itemvalue="Markdown" />
+            <item index="22" class="java.lang.String" itemvalue="hyperlink" />
+            <item index="23" class="java.lang.String" itemvalue="service-identity" />
+            <item index="24" class="java.lang.String" itemvalue="dj-database-url" />
+            <item index="25" class="java.lang.String" itemvalue="django-graphql-auth" />
+            <item index="26" class="java.lang.String" itemvalue="aniso8601" />
+            <item index="27" class="java.lang.String" itemvalue="graphql-core" />
+            <item index="28" class="java.lang.String" itemvalue="asgiref" />
+            <item index="29" class="java.lang.String" itemvalue="cryptography" />
+            <item index="30" class="java.lang.String" itemvalue="zope.interface" />
+            <item index="31" class="java.lang.String" itemvalue="whitenoise" />
+            <item index="32" class="java.lang.String" itemvalue="gunicorn" />
+            <item index="33" class="java.lang.String" itemvalue="APScheduler" />
+            <item index="34" class="java.lang.String" itemvalue="django-graphql-playground" />
+            <item index="35" class="java.lang.String" itemvalue="simplejson" />
+            <item index="36" class="java.lang.String" itemvalue="aioredis" />
+            <item index="37" class="java.lang.String" itemvalue="channels" />
+            <item index="38" class="java.lang.String" itemvalue="django-filter" />
+            <item index="39" class="java.lang.String" itemvalue="charset-normalizer" />
+            <item index="40" class="java.lang.String" itemvalue="msgpack" />
+            <item index="41" class="java.lang.String" itemvalue="idna" />
+            <item index="42" class="java.lang.String" itemvalue="PyJWT" />
+            <item index="43" class="java.lang.String" itemvalue="django-graphql-jwt" />
+            <item index="44" class="java.lang.String" itemvalue="async-timeout" />
+            <item index="45" class="java.lang.String" itemvalue="cffi" />
+            <item index="46" class="java.lang.String" itemvalue="pyasn1" />
+            <item index="47" class="java.lang.String" itemvalue="requests" />
+            <item index="48" class="java.lang.String" itemvalue="importlib-metadata" />
+            <item index="49" class="java.lang.String" itemvalue="graphene" />
+            <item index="50" class="java.lang.String" itemvalue="sqlparse" />
+            <item index="51" class="java.lang.String" itemvalue="pyOpenSSL" />
+            <item index="52" class="java.lang.String" itemvalue="zipp" />
+            <item index="53" class="java.lang.String" itemvalue="txaio" />
+            <item index="54" class="java.lang.String" itemvalue="urllib3" />
+            <item index="55" class="java.lang.String" itemvalue="djangorestframework" />
+            <item index="56" class="java.lang.String" itemvalue="django-cors-headers" />
+            <item index="57" class="java.lang.String" itemvalue="Rx" />
+            <item index="58" class="java.lang.String" itemvalue="text-unidecode" />
+            <item index="59" class="java.lang.String" itemvalue="tzdata" />
+            <item index="60" class="java.lang.String" itemvalue="incremental" />
+            <item index="61" class="java.lang.String" itemvalue="pytz-deprecation-shim" />
+            <item index="62" class="java.lang.String" itemvalue="singledispatch" />
+            <item index="63" class="java.lang.String" itemvalue="channels-redis" />
+            <item index="64" class="java.lang.String" itemvalue="chardet" />
+            <item index="65" class="java.lang.String" itemvalue="autobahn" />
+            <item index="66" class="java.lang.String" itemvalue="typing_extensions" />
+            <item index="67" class="java.lang.String" itemvalue="python-decouple" />
+            <item index="68" class="java.lang.String" itemvalue="pytz" />
+            <item index="69" class="java.lang.String" itemvalue="Twisted" />
+            <item index="70" class="java.lang.String" itemvalue="python-dateutil" />
+            <item index="71" class="java.lang.String" itemvalue="attrs" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N806" />
+          <option value="N803" />
+          <option value="N802" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="English_test.Question.__getitem__" />
+          <option value="int.__getitem__" />
+          <option value="str.__pow__" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
