@@ -3,52 +3,55 @@ from django.contrib.auth.models import User
 
 
 class Item(models.Model):
-    name = models.CharField(max_length=255)  # Название товара
-    description = models.TextField()  # Описание товара
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Цена товара A.BC
-    stock = models.PositiveIntegerField()  # Количество товаров на складе
-    category = models.ManyToManyField('Category')  # Категория товара TODO manytomany
-    image = models.ImageField(upload_to='products/', null=True, blank=True)  # Изображение товара
-    created_date = models.DateTimeField(auto_now_add=True)  # Время создания записи
-    updated_date = models.DateTimeField(auto_now=True)  # Время последнего обновления
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.PositiveIntegerField()
+    category = models.ManyToManyField('Category')
+    image = models.ImageField(upload_to='products/', null=True, blank=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Product: {self.name} Category: {self.category.name}'
+        result = ''
+        categories = Category.objects.filter(item__name=self.name)
+        for i, cat in enumerate(categories):
+            result += f' {cat}{"," if i != len(categories)-1 else""}'
+        return f'Product: {self.name} Category: {result}'
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=255)  # Название категории
-
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(Item, on_delete=models.SET_NULL, null=True)  # Покупатель
-    created_data = models.DateTimeField(auto_now_add=True)  # Время создания заказа
+    customer = models.ForeignKey(Item, on_delete=models.SET_NULL, null=True)
+    created_data = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20,
         choices=[('Pending', 'Ожидает'), ('Shipped', 'Отправлено'), ('Delivered', 'Доставлено')],
         default='Pending'
-    )  # Статус заказа
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)  # Общая сумма заказа
+    )
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)  # Заказ
-    product = models.ForeignKey(Item, on_delete=models.CASCADE)  # Товар
-    quantity = models.PositiveIntegerField()  # Количество товаров
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Цена на момент заказа
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
 
 
 class ShoppingCart(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)  # Ccылка на User
-    item_id = models.ForeignKey(Item, on_delete=models.CASCADE)  # Ccылка на Item
-    price_id = models.ForeignKey(OrderItem, on_delete=models.CASCADE)  # Ссылка на общую цену
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    item_id = models.ForeignKey(Item, on_delete=models.CASCADE)
+    price_id = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
 
