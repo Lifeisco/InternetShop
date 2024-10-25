@@ -43,8 +43,16 @@
             <a class="nav-link active btn hvr-back-pulse btn-lg" aria-current="page" href="{% url 'login' %}"><i class="fa-sharp fa-solid fa-right-to-bracket"></i> Login</a>
           </li>
         {% endif %}
-      {% block categorys %}
-      {% endblock %}
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle btn hvr-fade" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Категории
+        </a>
+        <ul class="dropdown-menu">
+               {% for category in all_categories %}
+                    <li><a class="dropdown-item" href="{% url 'view_products_by_category' category.name %}">{{ category.name }}</a></li>
+               {% endfor %}
+        </ul>
+          </li>
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -54,7 +62,6 @@
     </div>
   </div>
 </nav>
-
 {% block body %}
 {% endblock %}
 

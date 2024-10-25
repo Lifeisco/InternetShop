@@ -5,15 +5,15 @@ from main.models import Category, Item
 
 
 # Create your views here.
-#  TODO пагинацию для вывода каталога товаров
-#  TODO запрашивать только часть товаров, отображаемых на странице(гуглить django orm limit)
+#  TODO если в категории всего 1 стр пагинация не отобр (completed)
+#  TODO при запросе на стр, где нет товаров, его перекидывает на первую стр
 #  TODO отображение страницы карзины в которую пользователь добавил продукты(возможность изменить кол-во вещей)
 #  TODO кнопка 'Оформить закать' -> корзина опустошается -> создается объект заказа
 
 
 def index(request):
     data = {
-        'categories': Category.objects.all()
+        'all_categories': Category.objects.all()
     }
     return render(request, 'main/index.html', context=data)
 
@@ -50,14 +50,24 @@ def log_out(request):
 
 def view_products_by_category(request, category_name):
     category = get_object_or_404(Category, name=category_name)
-    products = Item.objects.filter(category=category)
+    page = int(request.GET.get("page", 1))  # Текущая страница
+    neXt = page - 1
+    print(page)
+    items_on_page = 4  # Кол-во товаров на странице
 
-    page = len(products)//8 + 1 if len(products) % 8 else len(products)//8  # Кол-во страниц товаров
+    products = Item.objects.filter(category=category)
+    page_count = len(products)//items_on_page + 1 if len(products) % items_on_page else len(products)//items_on_page  # Кол-во страниц товаров
+    products = products[(page-1)*items_on_page: page*items_on_page]
 
     data = {
-        'categories': category,
+        'all_categories': Category.objects.all(),
+        'category': category,
         'products': products,
-        'page': page
+        'page_count': page_count,
+        'page': page + 1,
+        'pages': list(range(1, page_count+1)),
+        'next': neXt + 1,
+        'back': page - 1
     }
     return render(request, 'main/Category.html', context=data)
 
