@@ -50,11 +50,14 @@ def log_out(request):
 
 def view_products_by_category(request, category_name):
     category = get_object_or_404(Category, name=category_name)
-    print(category)
     products = Item.objects.filter(category=category)
+
+    page = len(products)//8 + 1 if len(products) % 8 else len(products)//8  # Кол-во страниц товаров
+
     data = {
         'categories': category,
-        'products': products
+        'products': products,
+        'page': page
     }
     return render(request, 'main/Category.html', context=data)
 
