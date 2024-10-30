@@ -1,18 +1,9 @@
-{% extends 'main/header.html'%}
+{% extends 'main/header.html' %}
 
-
-{% block title %}All categories{% endblock %}
+{% block title %}Card{% endblock %}
 
 {% block body %}
-    <header class="bg-dark py-5">
-        <div class="container px-4 px-lg-5 my-5">
-            <div class="text-center text-white">
-                <h1 class="display-4 fw-bolder">{{ category }}</h1>
-            </div>
-        </div>
-    </header>
-
-    <section class="py-5">
+      <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                     {% for product in products %}
@@ -31,30 +22,10 @@
                                     ${{ product.price }}
                                 </div>
                             </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">В корзину</a></div>
-                            </div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
             </div>
         </section>
-
-
-    {#{% for x in pages %}#}
-    {#    <a href="?page={{ x }}" class="btn btn-primary">{{ x }}</a>#}
-    {#{% endfor %}#}
-    {% if page_count > 1 %}
-            <p>Страница {{ next }} из {{ page_count }}</p>
-        {% if back > 0 %}
-            <a href="?page={{ back }}" class="btn btn-primary">Назад</a>
-        {% endif %}
-        {% if next < page_count %}
-            <a href="?page={{ page }}" class="btn btn-primary">Вперёд</a>
-        {% endif %}
-    {% endif %}
-
-
 {% endblock %}

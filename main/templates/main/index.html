@@ -1,3 +1,6 @@
 {% extends 'main/header.html' %}
 
 {% block title %}{% if not user.is_anonymous %}Welcome, {{ user }}{% else %}Home page{% endif %}{% endblock %}
+{% block body%}
+    <p>Это домашняя страница</p>
+{% endblock %}

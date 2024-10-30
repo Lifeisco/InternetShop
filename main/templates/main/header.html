@@ -24,7 +24,7 @@
         </li>
         {% if not user.is_anonymous %}
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle btn hvr-sweep-to-right" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+         <a class="nav-link dropdown-toggle btn hvr-sweep-to-right" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               {{ user }}
           </a>
           <ul class="dropdown-menu">
@@ -52,6 +52,9 @@
                     <li><a class="dropdown-item" href="{% url 'view_products_by_category' category.name %}">{{ category.name }}</a></li>
                {% endfor %}
         </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active btn hvr-back-pulse btn-lg" aria-current="page" href="{% url 'cart' %}"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
           </li>
       </ul>
       <form class="d-flex" role="search">
