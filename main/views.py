@@ -4,9 +4,6 @@ from django.contrib.auth.models import User
 from main.models import Category, Item
 
 
-#  TODO если в категории всего 1 стр пагинация не отобр (completed)
-#  TODO при запросе на стр, где нет товаров, его перекидывает на первую стр (работает)
-#  TODO отображение страницы карзины в которую пользователь добавил продукты(возможность изменить кол-во вещей)
 #  TODO кнопка 'Оформить закать' -> корзина опустошается -> создается объект заказа
 
 
@@ -58,6 +55,9 @@ def view_products_by_category(request, category_name):
     products = Item.objects.filter(category=category)
     page_count = len(products)//items_on_page + 1 if len(products) % items_on_page else len(products)//items_on_page
     # Кол-во страниц товаров
+    if not 0 < page < page_count:
+        page = 1
+        neXt = 0
     products = products[(page-1)*items_on_page: page*items_on_page]
 
     data = {
@@ -73,22 +73,39 @@ def view_products_by_category(request, category_name):
 
 
 def cart(request):
+    # TODO кнопка очистить всю корзину
+    # TODO стоимость каждого товара умножается на его кол-во
+    # TODO выводитя полная стоимость всей корзины
+    # TODO переделать view корзины, чтобы carT в сессии был словарём(ключ - id товара, значение - кол-во товара)
+
     carT = request.session.get('cart', [])
     if request.method == 'POST':
         product = request.POST.get('product', False)
         action = request.POST.get('action', False)
         if product and action == 'add':
-            request.session['cart'].append({'id': product, 'amount': 1})
+            carT.append({'id': product, 'amount': 1})
         elif product and action == 'delete':
-            pass  # TODO удаление из корзины товара по ид
-        elif product and action == 'increment':
-            amount = request.POST.get('amount', 1)
-            # TODO увеличение кол-во товара на amount
+            for i in range(len(carT)):
+                if carT[i]['id'] == product:
+                    carT.pop(i)
+                    break
 
+        elif product and action == 'increment':
+            amount = int(request.POST.get('amount', 1))
+            for i in range(len(carT)):
+                if carT[i]['id'] == product:
+                    carT[i]['amount'] += amount
+                    if carT[i]['amount'] <= 0:
+                        carT.pop(i)
+                break
+        request.session['cart'] = carT
     products_id = [x['id'] for x in carT]
     product = Item.objects.filter(id__in=products_id)
+    for i in range(len(product)):
+        product[i].amount = carT[i]['amount']
 
     data = {
-        'products': product
+        'products': product,
+        'all_categories': Category.objects.all()
     }
     return render(request, 'main/cart.html', context=data)

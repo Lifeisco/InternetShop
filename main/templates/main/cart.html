@@ -22,6 +22,32 @@
                                     ${{ product.price }}
                                 </div>
                             </div>
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center">
+                                <form action="/cart/" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product" value="{{ product.id }}">
+                                    <input type="hidden" name="action" value="delete">
+                                    <button class="btn btn-outline-dark mt-auto" type="submit">Удалить</button>
+                                </form>
+                                <form action="/cart/" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product" value="{{ product.id }}">
+                                    <input type="hidden" name="action" value="increment">
+                                    <input type="hidden" name="amount" value="-1">
+                                    <button class="btn btn-outline-dark mt-auto" type="submit">-</button>
+                                </form>
+                                <span class="btn btn-outline-dark mt-auto">{{ product.amount }}</span>
+                                <form action="/cart/" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product" value="{{ product.id }}">
+                                    <input type="hidden" name="action" value="increment">
+                                    <input type="hidden" name="amount" value="1">
+                                    <button class="btn btn-outline-dark mt-auto" type="submit">+</button>
+                                </form>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
