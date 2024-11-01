@@ -55,7 +55,7 @@ def view_products_by_category(request, category_name):
     products = Item.objects.filter(category=category)
     page_count = len(products)//items_on_page + 1 if len(products) % items_on_page else len(products)//items_on_page
     # Кол-во страниц товаров
-    if not 0 < page < page_count:
+    if not 0 < page < page_count and page != page_count:
         page = 1
         neXt = 0
     products = products[(page-1)*items_on_page: page*items_on_page]
@@ -73,11 +73,11 @@ def view_products_by_category(request, category_name):
 
 
 def cart(request):
-    # TODO кнопка очистить всю корзину
+    # TODO кнопка очистить всю корзину (completed)
     # TODO стоимость каждого товара умножается на его кол-во
     # TODO выводитя полная стоимость всей корзины
-    # TODO переделать view корзины, чтобы carT в сессии был словарём(ключ - id товара, значение - кол-во товара)
-
+    # TODO переделать view корзины, чтобы carT в сессии был словарём (ключ - id товара, значение - кол-во товара)
+    total_price = 0
     carT = request.session.get('cart', [])
     if request.method == 'POST':
         product = request.POST.get('product', False)
@@ -98,14 +98,19 @@ def cart(request):
                     if carT[i]['amount'] <= 0:
                         carT.pop(i)
                 break
+        elif action == 'delete_all_from_cart':
+            carT = []
+            request.session['cart'] = carT
+
         request.session['cart'] = carT
-    products_id = [x['id'] for x in carT]
+    products_id = [int(x['id']) for x in carT]
     product = Item.objects.filter(id__in=products_id)
     for i in range(len(product)):
         product[i].amount = carT[i]['amount']
 
     data = {
         'products': product,
-        'all_categories': Category.objects.all()
+        'all_categories': Category.objects.all(),
+        'total_price': 0
     }
     return render(request, 'main/cart.html', context=data)
