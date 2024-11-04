@@ -52,7 +52,7 @@
                         </div>
                     </div>
                     {% endfor %}
-                        {% if products%}
+                        {% if products %}
                             <form action="/cart/" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="delete_all_from_cart">

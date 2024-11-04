@@ -23,7 +23,7 @@ def login_page(request):
 
         if user is not None:
             login(request, user)
-            request.session['cart'] = []
+            request.session['cart'] = {}
             return redirect('/')
         else:
             error_message = 'Неверное имя пользователя или пароль'
@@ -73,44 +73,51 @@ def view_products_by_category(request, category_name):
 
 
 def cart(request):
+    # TODO пофиксить баг с увеличением товаров
     # TODO кнопка очистить всю корзину (completed)
     # TODO стоимость каждого товара умножается на его кол-во
     # TODO выводитя полная стоимость всей корзины
-    # TODO переделать view корзины, чтобы carT в сессии был словарём (ключ - id товара, значение - кол-во товара)
+    # TODO переделать view корзины, чтобы carT в сессии был словарём (ключ - id товара, значение - кол-во товара)(completed)
+
     total_price = 0
-    carT = request.session.get('cart', [])
+    carT = dict(request.session.get('cart', {}))
     if request.method == 'POST':
         product = request.POST.get('product', False)
         action = request.POST.get('action', False)
         if product and action == 'add':
-            carT.append({'id': product, 'amount': 1})
+            carT[product] = 1
         elif product and action == 'delete':
-            for i in range(len(carT)):
-                if carT[i]['id'] == product:
-                    carT.pop(i)
+            for i in carT:
+                if i == product:
+                    del carT[i]
                     break
 
         elif product and action == 'increment':
             amount = int(request.POST.get('amount', 1))
-            for i in range(len(carT)):
-                if carT[i]['id'] == product:
-                    carT[i]['amount'] += amount
-                    if carT[i]['amount'] <= 0:
-                        carT.pop(i)
-                break
+            print(product)
+            for i in carT:
+                if i == product:
+                    print(i, product, 'цикл работает')
+                    carT[i] += amount
+                    if carT[i] <= 0:
+                        del carT[i]
+                    break
         elif action == 'delete_all_from_cart':
-            carT = []
+            carT = {}
             request.session['cart'] = carT
 
         request.session['cart'] = carT
-    products_id = [int(x['id']) for x in carT]
+    products_id = [x for x in carT]
     product = Item.objects.filter(id__in=products_id)
     for i in range(len(product)):
-        product[i].amount = carT[i]['amount']
-
+        product[i].amount = carT[products_id[i]]
+        print(product[i].amount, '---', carT[products_id[i]])
+    print(carT)
+    print(product)
     data = {
+        'cart': carT,
         'products': product,
         'all_categories': Category.objects.all(),
-        'total_price': 0
+        'total_price': total_price
     }
     return render(request, 'main/cart.html', context=data)
