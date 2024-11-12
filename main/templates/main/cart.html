@@ -9,18 +9,13 @@
                     {% for product in products %}
                     <div class="col mb-5">
                         <div class="card h-100">
-                            <!-- Product image-->
                             {% if product.image %}
                                 <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}" />
                             {% endif %}
-                            <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
-                                    <!-- Product name-->
                                     <h5 class="fw-bolder">{{ product.name }}</h5>
-                                    <!-- Product price-->
-                                    $ {{ product.price }}
-
+                                    $ {{ product.total_price }}
                                 </div>
                             </div>
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
@@ -46,17 +41,23 @@
                                     <input type="hidden" name="amount" value="1">
                                     <button class="btn btn-outline-dark mt-auto" type="submit">+</button>
                                 </form>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
-                        {% if products %}
-                            <form action="/cart/" method="post">
+                total price - {{ total_price }}
+                    {% if products %}
+                        <form action="/order/" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="order">
+                            <button class="btn btn-outline-dark mt-auto" type="submit" href="{% url 'order' %}">Оформить заказ</button>
+                        </form>
+                        <form action="/cart/" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="delete_all_from_cart">
                                 <button class="btn btn-outline-dark mt-auto" type="submit">Очистить корзину</button>
+
                             </form>
                             {% else %}
                             <p>Ваша корзина пуста</p>

@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from main.models import Category, Item
+from main.models import Category, Item, Order
+from datetime import datetime
 
 
 #  TODO кнопка 'Оформить закать' -> корзина опустошается -> создается объект заказа
-
 
 def index(request):
     data = {
@@ -73,13 +73,7 @@ def view_products_by_category(request, category_name):
 
 
 def cart(request):
-    # TODO пофиксить баг с увеличением товаров
-    # TODO кнопка очистить всю корзину (completed)
-    # TODO стоимость каждого товара умножается на его кол-во
-    # TODO выводитя полная стоимость всей корзины
-    # TODO переделать view корзины, чтобы carT в сессии был словарём (ключ - id товара, значение - кол-во товара)(completed)
 
-    total_price = 0
     carT = dict(request.session.get('cart', {}))
     if request.method == 'POST':
         product = request.POST.get('product', False)
@@ -87,21 +81,15 @@ def cart(request):
         if product and action == 'add':
             carT[product] = 1
         elif product and action == 'delete':
-            for i in carT:
-                if i == product:
-                    del carT[i]
-                    break
+            del carT[product]
 
         elif product and action == 'increment':
             amount = int(request.POST.get('amount', 1))
-            print(product)
-            for i in carT:
-                if i == product:
-                    print(i, product, 'цикл работает')
-                    carT[i] += amount
-                    if carT[i] <= 0:
-                        del carT[i]
-                    break
+
+            carT[product] += amount
+            if carT[product] <= 0:
+                del carT[product]
+
         elif action == 'delete_all_from_cart':
             carT = {}
             request.session['cart'] = carT
@@ -109,15 +97,40 @@ def cart(request):
         request.session['cart'] = carT
     products_id = [x for x in carT]
     product = Item.objects.filter(id__in=products_id)
+    total_price = 0
     for i in range(len(product)):
-        product[i].amount = carT[products_id[i]]
-        print(product[i].amount, '---', carT[products_id[i]])
-    print(carT)
-    print(product)
+        product[i].amount = carT[str(product[i].id)]
+        product[i].total_price = product[i].amount * product[i].price
+        total_price += product[i].total_price
     data = {
+        'total_price': total_price,
         'cart': carT,
         'products': product,
-        'all_categories': Category.objects.all(),
-        'total_price': total_price
+        'all_categories': Category.objects.all()
     }
     return render(request, 'main/cart.html', context=data)
+
+
+def order(request):
+    if request.method == 'POST':
+        carT = dict(request.session.get('cart', {}))
+        products_id = [x for x in carT]
+        product = Item.objects.filter(id__in=products_id)
+        total_price = 0
+        for i in range(len(product)):
+            product[i].amount = carT[str(product[i].id)]
+            product[i].total_price = product[i].amount * product[i].price
+            total_price += product[i].total_price
+        obj_order = Order.objects.create(customer=request.user, created_date=datetime.now(), total_price=total_price, status='Pending')
+        carT = {}
+        request.session['cart'] = carT #  опустошение корзины
+    else:
+        obj_order = Order.objects.all()
+        print(obj_order.values())
+
+    data = {
+        'obj_order': obj_order,
+        'all_categories': Category.objects.all()
+    }
+    return render(request, 'main/order.html', context=data)
+

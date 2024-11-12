@@ -3,5 +3,9 @@
 {% block title %}Заказ{% endblock %}
 
 {% block body %}
-    Here's your items you added
+    {% for order in obj_order%}
+        <p>The order was created at - {{ order.created_date }}</p>
+        <p>Status - {{ order.status }}</p>
+        <p>Total price - {{ order.total_price }}$</p>
+    {% endfor %}
 {% endblock %}

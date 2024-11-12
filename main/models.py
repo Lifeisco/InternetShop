@@ -28,8 +28,8 @@ class Category(models.Model):
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(Item, on_delete=models.SET_NULL, null=True)
-    created_data = models.DateTimeField(auto_now_add=True)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20,
         choices=[('Pending', 'Ожидает'), ('Shipped', 'Отправлено'), ('Delivered', 'Доставлено')],
