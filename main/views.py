@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from main.models import Category, Item, Order
+<<<<<<< HEAD
 from datetime import datetime
+=======
+>>>>>>> e687fa311d410276a2401c4643f2d8875953d311
 
 
 #  TODO кнопка 'Оформить закать' -> корзина опустошается -> создается объект заказа
@@ -114,6 +117,7 @@ def cart(request):
 def order(request):
     if request.method == 'POST':
         carT = dict(request.session.get('cart', {}))
+<<<<<<< HEAD
         products_id = [x for x in carT]
         product = Item.objects.filter(id__in=products_id)
         total_price = 0
@@ -134,3 +138,10 @@ def order(request):
     }
     return render(request, 'main/order.html', context=data)
 
+=======
+        object_of_order = Order.objects.create()
+    data = {
+
+    }
+    return render(request, 'main/order.html', context=data)
+>>>>>>> e687fa311d410276a2401c4643f2d8875953d311
