@@ -1,13 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from main.models import Category, Item, Order
+from main.models import Category, Item, Order, OrderItem
 
 from datetime import datetime
 
 
 
-#  TODO кнопка 'Оформить закать' -> корзина опустошается -> создается объект заказа
+#  TODO на странице заказа список товаров, входящий в этот заказ(список товаров)
+#  TODO кнопка посмотреть все заказы(история)
+#  TODO в истории можно нажать на заказ и увидеть его конкретно
+#  TODO в заказе возможность перейти на товар и еще раз его заказать
+#  TODO сделать отдельную страницу товаров
+
 
 def index(request):
     data = {
@@ -113,25 +118,32 @@ def cart(request):
     return render(request, 'main/cart.html', context=data)
 
 
-def order(request):
+def order(request):  #  Не оптимизировано!
     if request.method == 'POST':
-        carT = dict(request.session.get('cart', {}))
-        products_id = [x for x in carT]
-        product = Item.objects.filter(id__in=products_id)
-        total_price = 0
-        for i in range(len(product)):
-            product[i].amount = carT[str(product[i].id)]
-            product[i].total_price = product[i].amount * product[i].price
-            total_price += product[i].total_price
-        obj_order = Order.objects.create(customer=request.user, created_date=datetime.now(), total_price=total_price, status='Pending')
-        carT = {}
-        request.session['cart'] = carT #  опустошение корзины
-    else:
-        obj_order = Order.objects.all()
-        print(obj_order.values())
+        action = request.POST.get('action', False)
+        if action == 'make_order':
+            carT = dict(request.session.get('cart', {}))
+            products_id = [x for x in carT]
+            product = Item.objects.filter(id__in=products_id)
+            total_price = 0
+            for i in range(len(product)):
+                total_price += product[i].price * carT[str(product[i].id)]
+
+            obj_order = Order.objects.create(customer=request.user, created_date=datetime.now(),
+                                                 status='Pending', total_price=total_price)
+
+            for i in range(len(product)):
+                OrderItem.objects.create(order=obj_order, product=product[i], quantity=carT[str(product[i].id)],
+                                         price=product[i].price * carT[str(product[i].id)])
+
+            carT = {}
+            request.session['cart'] = carT #  опустошение корзины
+
+    obj_order = Order.objects.filter(customer=request.user).last()
 
     data = {
         'obj_order': obj_order,
+        'products_list': OrderItem.objects.filter(order=obj_order),
         'all_categories': Category.objects.all()
     }
     return render(request, 'main/order.html', context=data)

@@ -49,11 +49,9 @@
                 total price - {{ total_price }}
                     {% if products %}
                         <form action="/order/" method="post">
-<<<<<<< HEAD
+
                             {% csrf_token %}
-=======
->>>>>>> e687fa311d410276a2401c4643f2d8875953d311
-                            <input type="hidden" name="order">
+                            <input type="hidden" name="action" value="make_order">
                             <button class="btn btn-outline-dark mt-auto" type="submit" href="{% url 'order' %}">Оформить заказ</button>
                         </form>
                         <form action="/cart/" method="post">
