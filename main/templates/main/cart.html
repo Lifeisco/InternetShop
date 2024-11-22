@@ -46,7 +46,9 @@
                         </div>
                     </div>
                     {% endfor %}
-                total price - {{ total_price }}
+                {% if cart %}
+                    total price - {{ total_price }}
+                {% endif %}
                     {% if products %}
                         <form action="/order/" method="post">
 

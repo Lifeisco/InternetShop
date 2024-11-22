@@ -3,8 +3,22 @@
 {% block title %}Заказ{% endblock %}
 
 {% block body %}
-<p>The order was created at - {{ obj_order.created_date }}</p>
-<p>Status - {{ obj_order.status }}</p>
-<p>Total price - {{ obj_order.total_price }}$</p>
+
+{% if all_orders %}
+    {% for order in obj_order %}
+        <p>The order was created at - {{ order.created_date }}</p>
+        <p>Status - {{ order.status }}</p>
+        <p>Total price - {{ order.total_price }}$</p>
+        <a href="?id={{ order.id }}">See order</a>
+    {% endfor %}
+{% else %}
+    <p>The order was created at - {{ obj_order.created_date }}</p>
+    <p>Status - {{ obj_order.status }}</p>
+    <p>Total price - {{ obj_order.total_price }}$</p>
+    {% for product in products_list %}
+        <p><a href="{% url 'product' %}?id={{ product.product.id }}">{{ product }}</a> - {{ product.price }} $</p>
+    {% endfor %}
+    <a href="?id=all">See all orders</a>
+{% endif %}
 
 {% endblock %}

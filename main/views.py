@@ -2,23 +2,34 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from main.models import Category, Item, Order, OrderItem
-
 from datetime import datetime
 
 
+#  TODO отдельная страница для каждого товара, где мы увидим доп инфу об этом товаре(добавить вывод описания)
 
-#  TODO на странице заказа список товаров, входящий в этот заказ(список товаров)
-#  TODO кнопка посмотреть все заказы(история)
-#  TODO в истории можно нажать на заказ и увидеть его конкретно
-#  TODO в заказе возможность перейти на товар и еще раз его заказать
-#  TODO сделать отдельную страницу товаров
-
+#  TODO кнопки в админ панеле для просмотра ожидающих и отправленных заказов
 
 def index(request):
+
     data = {
+        'products': Item.objects.all(),
         'all_categories': Category.objects.all()
     }
     return render(request, 'main/index.html', context=data)
+
+# Страница конкретного товара с его описанием и т.д.
+def product(request):
+    product_id = request.GET.get('id', False)
+    # сообщение об ошибке
+    if (not product_id or
+            not product_id.isdigit() or
+            not Item.objects.filter(id=product_id).exists()):
+        data = {'item': False}
+        return render(request, 'main/product.html', context=data)
+    item = Item.objects.get(id=product_id)
+    data = {'item': item}
+
+    return render(request, 'main/product.html', context=data)
 
 
 def login_page(request):
@@ -88,7 +99,8 @@ def cart(request):
         if product and action == 'add':
             carT[product] = 1
         elif product and action == 'delete':
-            del carT[product]
+            if product in carT:
+                del carT[product]
 
         elif product and action == 'increment':
             amount = int(request.POST.get('amount', 1))
@@ -118,32 +130,45 @@ def cart(request):
     return render(request, 'main/cart.html', context=data)
 
 
-def order(request):  #  Не оптимизировано!
+def order(request):
     if request.method == 'POST':
         action = request.POST.get('action', False)
         if action == 'make_order':
             carT = dict(request.session.get('cart', {}))
-            products_id = [x for x in carT]
-            product = Item.objects.filter(id__in=products_id)
-            total_price = 0
-            for i in range(len(product)):
-                total_price += product[i].price * carT[str(product[i].id)]
+            if carT != {}:
 
-            obj_order = Order.objects.create(customer=request.user, created_date=datetime.now(),
-                                                 status='Pending', total_price=total_price)
+                products_id = [x for x in carT]
+                product = Item.objects.filter(id__in=products_id)
+                total_price = 0
+                for i in range(len(product)):
+                    total_price += product[i].price * carT[str(product[i].id)]
 
-            for i in range(len(product)):
-                OrderItem.objects.create(order=obj_order, product=product[i], quantity=carT[str(product[i].id)],
-                                         price=product[i].price * carT[str(product[i].id)])
+                obj_order = Order.objects.create(customer=request.user, created_date=datetime.now(),
+                                                     status='Pending', total_price=total_price)
 
-            carT = {}
-            request.session['cart'] = carT #  опустошение корзины
+                for i in range(len(product)):
+                    OrderItem.objects.create(order=obj_order, product=product[i], quantity=carT[str(product[i].id)],
+                                             price=product[i].price * carT[str(product[i].id)])
 
-    obj_order = Order.objects.filter(customer=request.user).last()
+                carT = {}
+                request.session['cart'] = carT #  опустошение корзины
+
+    order_id = request.GET.get('id', False)
+    all_orders = False
+    if order_id == 'all':
+        obj_order = Order.objects.filter(customer=request.user)
+        all_orders = True
+    elif order_id.isdigit():
+        obj_order = Order.objects.filter(customer=request.user, id=order_id).last()
+    else:
+        obj_order = Order.objects.filter(customer=request.user).last()
 
     data = {
         'obj_order': obj_order,
-        'products_list': OrderItem.objects.filter(order=obj_order),
-        'all_categories': Category.objects.all()
+        'products_list': OrderItem.objects.filter(order=obj_order) if not all_orders else False,
+        'all_categories': Category.objects.all(),
+        'all_orders': all_orders
     }
     return render(request, 'main/order.html', context=data)
+
+

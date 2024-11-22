@@ -1,62 +1,41 @@
-{% extends 'main/header.html'%}
-
-
-{% block title %}All categories{% endblock %}
+{% extends "main/header.html" %}
+{% block title %}Product{% endblock %}
 
 {% block body %}
-    <header class="bg-dark py-5">
-        <div class="container px-4 px-lg-5 my-5">
-            <div class="text-center text-white">
-                <h1 class="display-4 fw-bolder">{{ category }}</h1>
-            </div>
-        </div>
-    </header>
-
-    <section class="py-5">
+    {% if item %}
+        <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    {% for product in products %}
                     <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Product image-->
-                            {% if product.image %}
-                                <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}" />
+                            {% if item.image %}
+                                <img class="card-img-top" src="{{ item.image.url }}" alt="{{ item.name }}" />
                             {% endif %}
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
                                     <!-- Product name-->
-                                    <a href="{% url 'product' %}?id={{ product.id }}"><h5 class="fw-bolder">{{ product.name }}</h5></a>
+                                    <h5 class="fw-bolder">{{ item.name }}</h5>
                                     <!-- Product price-->
-                                    ${{ product.price }}
+                                    ${{ item.price }}
                                 </div>
                             </div>
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <form action="/cart/" method="post">
                                     {% csrf_token %}
-                                    <input type="hidden" name="product" value="{{ product.id }}">
+                                    <input type="hidden" name="product" value="{{ item.id }}">
                                     <input type="hidden" name="action" value="add">
                                     <div class="text-center"><button class="btn btn-outline-dark mt-auto" type="submit">В корзину</button></div>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
             </div>
         </section>
-
-
-    {% if page_count > 1 %}
-            <p>Страница {{ next }} из {{ page_count }}</p>
-        {% if back > 0 %}
-            <a href="?page={{ back }}" class="btn btn-primary">Назад</a>
-        {% endif %}
-        {% if next < page_count %}
-            <a href="?page={{ page }}" class="btn btn-primary">Вперёд</a>
-        {% endif %}
+    {% else %}
+        <p>Извините, товар не найден, перейдите в каталог и выберете другой товар</p>
     {% endif %}
-
-
 {% endblock %}
