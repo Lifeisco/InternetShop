@@ -10,7 +10,7 @@
                     <div class="col mb-5">
                         <div class="card h-100">
                             {% if product.image %}
-                                <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}" />
+                                <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}"/>
                             {% endif %}
                             <div class="card-body p-4">
                                 <div class="text-center">
@@ -20,6 +20,8 @@
                             </div>
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="text-center">
+                                    <div class="container mt-5">
+                                        <div class="d-flex align-items-center justify-content-center gap-3">
                                 <form action="/cart/" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="product" value="{{ product.id }}">
@@ -41,6 +43,8 @@
                                     <input type="hidden" name="amount" value="1">
                                     <button class="btn btn-outline-dark mt-auto" type="submit">+</button>
                                 </form>
+                                </div>
+                                </div>
                                 </div>
                             </div>
                         </div>

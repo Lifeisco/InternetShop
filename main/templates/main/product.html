@@ -3,39 +3,76 @@
 
 {% block body %}
     {% if item %}
-        <section class="py-5">
-            <div class="container px-4 px-lg-5 mt-5">
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            {% if item.image %}
-                                <img class="card-img-top" src="{{ item.image.url }}" alt="{{ item.name }}" />
-                            {% endif %}
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">{{ item.name }}</h5>
-                                    <!-- Product price-->
-                                    ${{ item.price }}
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <form action="/cart/" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="product" value="{{ item.id }}">
-                                    <input type="hidden" name="action" value="add">
-                                    <div class="text-center"><button class="btn btn-outline-dark mt-auto" type="submit">В корзину</button></div>
-                                </form>
-                            </div>
+        <!-- Контент товара -->
+<div class="d-flex justify-content-center mt-5">
+    <div class="container" style="max-width: 800px;">
+        <div class="row g-4">
+            <!-- Левая колонка: Карусель -->
+            <div class="col-md-6">
+                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="{{ item.image.url }}" class="d-block w-100" alt="Фото 1">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{{ item.image.url }}" class="d-block w-100" alt="Фото 2">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{{ item.image.url }}" class="d-block w-100" alt="Фото 3">
                         </div>
                     </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Предыдущий</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Следующий</span>
+                    </button>
                 </div>
             </div>
-        </section>
+
+            <!-- Правая колонка: Информация о товаре -->
+            <div class="col-md-6">
+                <h1 class="mb-4">{{ item.name }}</h1>
+                <p class="text-muted">{{ item.description }}</p>
+
+                <!-- БЖУ -->
+                <table class="table table-bordered text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Белки</th>
+                            <th scope="col">Жиры</th>
+                            <th scope="col">Углеводы</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10 г</td>
+                            <td>5 г</td>
+                            <td>15 г</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Цена и кнопка -->
+                <div class="d-flex align-items-center mt-4">
+                    <h2 class="me-3 text-success">{{ item.price }} $</h2>
+                    <form action="/cart/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="product" value="{{ item.id }}">
+                        <input type="hidden" name="action" value="add">
+                        <div class="text-center"><button class="section2_btn btn22" type="submit">В корзину</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     {% else %}
         <p>Извините, товар не найден, перейдите в каталог и выберете другой товар</p>
     {% endif %}
+
 {% endblock %}
+
+

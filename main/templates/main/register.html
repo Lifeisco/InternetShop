@@ -1,31 +1,39 @@
+{% extends 'main/header.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static "main/css/bootstrap.css" %}">
-    <link rel="stylesheet" href="{% static "main/js/bootstrap.min.js" %}">
-    <title>Title</title>
-</head>
-<body>
-    <form method="post" action="/sign_up/">
-    {% csrf_token %}
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Ваше имя</label>
-    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="name">
-  </div>
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Пароль</label>
-    <input type="text" class="form-control" id="exampleInputPassword1" name="password">
-  </div>
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Email</label>
-    <input type="text" class="form-control" id="exampleInputPassword1" name="email">
-  </div>
-  <div class="mb-3 form-check">
-      <label for="exampleCheck1"></label><input type="checkbox" class="form-check-input" id="exampleCheck1">
-  </div>
-  <button type="submit" class="btn btn-primary" value="save">Отправить</button>
-</form>
-</body>
-</html>
+
+
+{% block title %}Login{% endblock %}
+
+
+
+{% block body %}
+
+<div class="d-flex vh-100">
+    <div class="m-auto card shadow-lg p-4" style="max-width: 500px; width: 100%;">
+        <h3 class="text-center mb-4">Регистрация</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Имя пользователя</label>
+                <input type="text" class="form-control" id="username" placeholder="Введите имя" name="name">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Электронная почта</label>
+                <input type="email" class="form-control" id="email" placeholder="Введите email" name="email">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Пароль</label>
+                <input type="password" class="form-control" id="password" placeholder="Введите пароль" name="password">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+            <p class="text-center mt-3">
+                Уже есть аккаунт? <a href="{% url 'login' %}" class="text-primary fw-bold">Войти</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
+
+

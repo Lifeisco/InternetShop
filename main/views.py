@@ -5,9 +5,9 @@ from main.models import Category, Item, Order, OrderItem
 from datetime import datetime
 
 
-#  TODO отдельная страница для каждого товара, где мы увидим доп инфу об этом товаре(добавить вывод описания)
+# TODO Доработать шаблоны(В шаблоне корзины + и - в ряд, на странице товара - все переделать)
+# TODO настоить сайт на работу без перезагрузки страницы(AJAX запросы)
 
-#  TODO кнопки в админ панеле для просмотра ожидающих и отправленных заказов
 
 def index(request):
 
@@ -27,7 +27,8 @@ def product(request):
         data = {'item': False}
         return render(request, 'main/product.html', context=data)
     item = Item.objects.get(id=product_id)
-    data = {'item': item}
+    data = {'item': item,
+            'all_categories': Category.objects.all()}
 
     return render(request, 'main/product.html', context=data)
 
@@ -45,8 +46,9 @@ def login_page(request):
             return redirect('/')
         else:
             error_message = 'Неверное имя пользователя или пароль'
+    data = {'all_categories': Category.objects.all()}
 
-    return render(request, 'main/log_in.html')
+    return render(request, 'main/log_in.html', context=data)
 
 
 def reg_page(request):
@@ -55,8 +57,9 @@ def reg_page(request):
                                             request.POST.get("email"),
                                             request.POST.get("password"))
         new_user.save()
+    data = {'all_categories': Category.objects.all()}
 
-    return render(request, 'main/register.html')
+    return render(request, 'main/register.html', context=data)
 
 
 def log_out(request):
@@ -104,7 +107,6 @@ def cart(request):
 
         elif product and action == 'increment':
             amount = int(request.POST.get('amount', 1))
-
             carT[product] += amount
             if carT[product] <= 0:
                 del carT[product]
@@ -154,11 +156,12 @@ def order(request):
                 request.session['cart'] = carT #  опустошение корзины
 
     order_id = request.GET.get('id', False)
+    print(order_id)
     all_orders = False
     if order_id == 'all':
         obj_order = Order.objects.filter(customer=request.user)
         all_orders = True
-    elif order_id.isdigit():
+    elif str(order_id).isdigit():
         obj_order = Order.objects.filter(customer=request.user, id=order_id).last()
     else:
         obj_order = Order.objects.filter(customer=request.user).last()
@@ -170,5 +173,4 @@ def order(request):
         'all_orders': all_orders
     }
     return render(request, 'main/order.html', context=data)
-
 
