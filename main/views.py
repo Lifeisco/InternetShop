@@ -1,3 +1,5 @@
+from unicodedata import category
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -5,8 +7,9 @@ from main.models import Category, Item, Order, OrderItem
 from datetime import datetime
 
 
-# TODO Доработать шаблоны(В шаблоне корзины + и - в ряд, на странице товара - все переделать)
 # TODO настоить сайт на работу без перезагрузки страницы(AJAX запросы)
+# TODO уведомления о новых заказах через т бота
+# TODO несколько фото на один товар
 
 
 def index(request):
@@ -68,18 +71,33 @@ def log_out(request):
 
 
 def view_products_by_category(request, category_name):
-    category = get_object_or_404(Category, name=category_name)
+    search = request.GET.get("search", '')
     page = int(request.GET.get("page", 1))  # Текущая страница
     neXt = page - 1
     items_on_page = 4  # Кол-во товаров на странице
 
-    products = Item.objects.filter(category=category)
+    if category_name == 'all': #  TODO переписать короче
+        category = 'all'
+
+        if search:
+            products = Item.objects.filter(name__contains=search)
+            search = f'search={search}&'
+        else:
+            products = Item.objects.all()
+    else:
+        category = get_object_or_404(Category, name=category_name)
+        if search:
+            products = Item.objects.filter(category=category, name__contains=search)
+        else:
+            products = Item.objects.filter(category=category)
+
     page_count = len(products)//items_on_page + 1 if len(products) % items_on_page else len(products)//items_on_page
     # Кол-во страниц товаров
     if not 0 < page < page_count and page != page_count:
         page = 1
         neXt = 0
     products = products[(page-1)*items_on_page: page*items_on_page]
+
 
     data = {
         'all_categories': Category.objects.all(),
@@ -88,8 +106,8 @@ def view_products_by_category(request, category_name):
         'page_count': page_count,
         'page': page + 1,
         'next': neXt + 1,
-        'back': page - 1
-    }
+        'back': page - 1,
+        'search': search    }
     return render(request, 'main/category.html', context=data)
 
 

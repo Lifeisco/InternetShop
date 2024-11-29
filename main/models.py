@@ -11,6 +11,11 @@ class Item(models.Model):
     image = models.ImageField(upload_to='products/', null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    protein = models.FloatField(default=0)
+    fats = models.FloatField(default=0)
+    carbonhydrates = models.FloatField(default=0)
+    calories = models.FloatField(default=0)
+
 
     def __str__(self):
         result = ''

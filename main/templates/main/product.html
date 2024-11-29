@@ -41,6 +41,7 @@
                 <table class="table table-bordered text-center">
                     <thead class="table-light">
                         <tr>
+                            <th scope="col">Калории</th>
                             <th scope="col">Белки</th>
                             <th scope="col">Жиры</th>
                             <th scope="col">Углеводы</th>
@@ -48,9 +49,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>10 г</td>
-                            <td>5 г</td>
-                            <td>15 г</td>
+                            <td>{{ item.calories }}</td>
+                            <td>{{ item.protein }}</td>
+                            <td>{{ item.fats }}</td>
+                            <td>{{ item.carbonhydrates }}</td>
                         </tr>
                     </tbody>
                 </table>

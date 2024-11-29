@@ -7,7 +7,11 @@
     <header class="bg-dark py-5">
         <div class="container px-4 px-lg-5 my-5">
             <div class="text-center text-white">
-                <h1 class="display-4 fw-bolder">{{ category }}</h1>
+                {% if category == "all" %}
+                    <h1 class="display-4 fw-bolder">Результаты поиска</h1>
+                {% else %}
+                    <h1 class="display-4 fw-bolder">{{ category }}</h1>
+                {% endif %}
             </div>
         </div>
     </header>
@@ -51,10 +55,10 @@
     {% if page_count > 1 %}
             <p>Страница {{ next }} из {{ page_count }}</p>
         {% if back > 0 %}
-            <a href="?page={{ back }}" class="btn btn-primary">Назад</a>
+            <a href="?{{ search }}page={{ back }}" class="btn btn-primary">Назад</a>
         {% endif %}
         {% if next < page_count %}
-            <a href="?page={{ page }}" class="btn btn-primary">Вперёд</a>
+            <a href="?{{ search }}page={{ page }}" class="btn btn-primary">Вперёд</a>
         {% endif %}
     {% endif %}
 
