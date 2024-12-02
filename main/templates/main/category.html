@@ -1,7 +1,7 @@
 {% extends 'main/header.html'%}
 
 
-{% block title %}All categories{% endblock %}
+{% block title %}{{ category }}{% endblock %}
 
 {% block body %}
     <header class="bg-dark py-5">
@@ -55,10 +55,10 @@
     {% if page_count > 1 %}
             <p>Страница {{ next }} из {{ page_count }}</p>
         {% if back > 0 %}
-            <a href="?{{ search }}page={{ back }}" class="btn btn-primary">Назад</a>
+            <a href="?{% if search %}search={{ search }}&{% endif %}page={{ back }}" class="btn btn-primary">Назад</a>
         {% endif %}
         {% if next < page_count %}
-            <a href="?{{ search }}page={{ page }}" class="btn btn-primary">Вперёд</a>
+            <a href="?{% if search %}search={{ search }}&{% endif %}page={{ page }}" class="btn btn-primary">Вперёд</a>
         {% endif %}
     {% endif %}
 

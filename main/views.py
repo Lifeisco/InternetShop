@@ -82,6 +82,7 @@ def view_products_by_category(request, category_name):
         if search:
             products = Item.objects.filter(name__contains=search)
             search = f'search={search}&'
+            print(search)
         else:
             products = Item.objects.all()
     else:
@@ -151,38 +152,42 @@ def cart(request):
 
 
 def order(request):
-    if request.method == 'POST':
-        action = request.POST.get('action', False)
-        if action == 'make_order':
-            carT = dict(request.session.get('cart', {}))
-            if carT != {}:
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            action = request.POST.get('action', False)
+            if action == 'make_order':
+                carT = dict(request.session.get('cart', {}))
+                if carT != {}:
 
-                products_id = [x for x in carT]
-                product = Item.objects.filter(id__in=products_id)
-                total_price = 0
-                for i in range(len(product)):
-                    total_price += product[i].price * carT[str(product[i].id)]
+                    products_id = [x for x in carT]
+                    product = Item.objects.filter(id__in=products_id)
+                    total_price = 0
+                    for i in range(len(product)):
+                        total_price += product[i].price * carT[str(product[i].id)]
 
-                obj_order = Order.objects.create(customer=request.user, created_date=datetime.now(),
-                                                     status='Pending', total_price=total_price)
+                    obj_order = Order.objects.create(customer=request.user, created_date=datetime.now(),
+                                                         status='Pending', total_price=total_price)
 
-                for i in range(len(product)):
-                    OrderItem.objects.create(order=obj_order, product=product[i], quantity=carT[str(product[i].id)],
-                                             price=product[i].price * carT[str(product[i].id)])
+                    for i in range(len(product)):
+                        OrderItem.objects.create(order=obj_order, product=product[i], quantity=carT[str(product[i].id)],
+                                                 price=product[i].price * carT[str(product[i].id)])
 
-                carT = {}
-                request.session['cart'] = carT #  опустошение корзины
+                    carT = {}
+                    request.session['cart'] = carT #  опустошение корзины
 
-    order_id = request.GET.get('id', False)
-    print(order_id)
-    all_orders = False
-    if order_id == 'all':
-        obj_order = Order.objects.filter(customer=request.user)
-        all_orders = True
-    elif str(order_id).isdigit():
-        obj_order = Order.objects.filter(customer=request.user, id=order_id).last()
+        order_id = request.GET.get('id', False)
+        all_orders = False
+        if order_id == 'all':
+            obj_order = Order.objects.filter(customer=request.user)
+            all_orders = True
+        elif str(order_id).isdigit():
+            obj_order = Order.objects.filter(customer=request.user, id=order_id).last()
+        else:
+            obj_order = Order.objects.filter(customer=request.user).last()
+
     else:
-        obj_order = Order.objects.filter(customer=request.user).last()
+        data = {'error_message': 'Авторизуйтесь или зарегистрируйтесь, чтобы заказать'}
+        return render(request, 'main/order.html', context=data)
 
     data = {
         'obj_order': obj_order,
@@ -190,5 +195,5 @@ def order(request):
         'all_categories': Category.objects.all(),
         'all_orders': all_orders
     }
-    return render(request, 'main/order.html', context=data)
 
+    return render(request, 'main/order.html', context=data)

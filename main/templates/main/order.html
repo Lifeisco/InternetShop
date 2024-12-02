@@ -4,6 +4,8 @@
 
 {% block body %}
 
+{% if request.user.is_authenticated %}
+
 {% if all_orders %}
     {% for order in obj_order %}
         <p>The order was created at - {{ order.created_date }}</p>
@@ -19,6 +21,11 @@
         <p><a href="{% url 'product' %}?id={{ product.product.id }}">{{ product }}</a> - {{ product.price }} $</p>
     {% endfor %}
     <a href="?id=all">See all orders</a>
+{% endif %}
+
+{% else %}
+    <p>{{ error_message }}</p>
+
 {% endif %}
 
 {% endblock %}
