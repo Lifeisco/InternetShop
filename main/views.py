@@ -13,12 +13,14 @@ from datetime import datetime
 
 
 def index(request):
+    return render(request, 'main/index.html')
 
+def catalog(request):
     data = {
         'products': Item.objects.all(),
         'all_categories': Category.objects.all()
     }
-    return render(request, 'main/index.html', context=data)
+    return render(request, 'main/catalog.html', context=data)
 
 # Страница конкретного товара с его описанием и т.д.
 def product(request):
@@ -108,7 +110,7 @@ def view_products_by_category(request, category_name):
         'page': page + 1,
         'next': neXt + 1,
         'back': page - 1,
-        'search': search    }
+        'search': search}
     return render(request, 'main/category.html', context=data)
 
 

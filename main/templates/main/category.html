@@ -3,6 +3,19 @@
 
 {% block title %}{{ category }}{% endblock %}
 
+{% block category %}
+    <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle btn hvr-fade" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Категории товаров
+            </a>
+        <ul class="dropdown-menu">
+            {% for category in all_categories %}
+                <li><a class="dropdown-item" href="{% url 'view_products_by_category' category.name %}">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </li>
+{% endblock %}
+
 {% block body %}
     <header class="bg-dark py-5">
         <div class="container px-4 px-lg-5 my-5">
