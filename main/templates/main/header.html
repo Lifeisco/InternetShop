@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/png" href="{% static 'main/img/ico.png' %}" >
     <link rel="stylesheet" href="{% static "main/css/bootstrap.css" %}">
     <link rel="stylesheet" href="{% static "main/css/btn-hvr.css" %}">
     <link rel="stylesheet" href="{% static "main/css/anone.css" %}">
@@ -22,7 +23,7 @@
     <div class="collapse navbar-collapse" id="navbarScroll">
       <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
         <li class="nav-item">
-          <a href="{% url 'home' %}" class="nav-link btn hvr-fade btn-lg"><i class="fa-sharp fa-solid fa-house"></i> Home</a>
+          <a href="{% url 'home' %}" class="nav-link btn hvr-fade btn-lg"><i class="fa-sharp fa-solid fa-house"></i> Главная</a>
         </li>
         <li class="nav-item">
             <a class="nav-link active btn hvr-back-pulse btn-lg" aria-current="page" href="{% url 'catalog' %}"><i class="fa-light fa-bag-shopping-minus"></i>Каталог</a>
@@ -46,14 +47,14 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a class="nav-link btn hvr-back-pulse btn-lg" href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+          <a class="nav-link btn hvr-back-pulse btn-lg" href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Выйти</a>
         </li>
         {% else %}
           <li class="nav-item">
-            <a class="nav-link active btn hvr-back-pulse btn-lg" aria-current="page" href="{% url 'register' %}"><i class="fa-solid fa-user-plus"></i> Register</a>
+            <a class="nav-link active btn hvr-back-pulse btn-lg" aria-current="page" href="{% url 'register' %}"><i class="fa-solid fa-user-plus"></i> Зарегистрироваться</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active btn hvr-back-pulse btn-lg" aria-current="page" href="{% url 'login' %}"><i class="fa-sharp fa-solid fa-right-to-bracket"></i> Login</a>
+            <a class="nav-link active btn hvr-back-pulse btn-lg" aria-current="page" href="{% url 'login' %}"><i class="fa-sharp fa-solid fa-right-to-bracket"></i> Войти</a>
           </li>
         {% endif %}
       </ul>
