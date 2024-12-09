@@ -33,7 +33,7 @@ class Category(models.Model):
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE, blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20,
@@ -41,6 +41,7 @@ class Order(models.Model):
         default='Pending'
     )
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    courier = models.ForeignKey('Courier', on_delete=models.SET_NULL, blank=True, null=True)
 
 
 class OrderItem(models.Model):
@@ -51,6 +52,24 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
+
+
+class Courier(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    location_x = models.FloatField()
+    location_y = models.FloatField()
+
+    def __str__(self):
+        return self.user.username
+
+
+class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bonus = models.IntegerField()
+
+    def __str__(self):
+        return self.user.username
+
 
 
 class ShoppingCart(models.Model):
@@ -64,3 +83,14 @@ class CartItem(models.Model):
     shopping_cart_id = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
     item_id = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+
+
+class Storage(models.Model):
+    location_x = models.FloatField()
+    location_y = models.FloatField()
+
+
+class ItemsInStorage(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    storage = models.ForeignKey(Storage, on_delete=models.CASCADE)
+    stock = models.IntegerField()

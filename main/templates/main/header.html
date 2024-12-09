@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/png" href="{% static 'main/img/ico.png' %}" >
+    {% block link %}{% endblock %}
     <link rel="stylesheet" href="{% static "main/css/bootstrap.css" %}">
     <link rel="stylesheet" href="{% static "main/css/btn-hvr.css" %}">
     <link rel="stylesheet" href="{% static "main/css/anone.css" %}">
@@ -16,7 +17,7 @@
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Online Shop</a>
+    <a class="navbar-brand" href="#">JustFood</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

@@ -7,8 +7,10 @@ from main.models import Category, Item, Order, OrderItem
 from datetime import datetime
 
 
+# TODO django rest framework drf api endpoints(покажи каталог товара + координаты --> показывается каталог товара с ближ по коорд склада )
+
+
 # TODO настоить сайт на работу без перезагрузки страницы(AJAX запросы)
-# TODO уведомления о новых заказах через т бота
 # TODO несколько фото на один товар
 
 
@@ -78,9 +80,8 @@ def view_products_by_category(request, category_name):
     neXt = page - 1
     items_on_page = 4  # Кол-во товаров на странице
 
-    if category_name == 'all': #  TODO переписать короче
+    if category_name == 'all':
         category = 'all'
-
         if search:
             products = Item.objects.filter(name__contains=search)
             search = f'search={search}&'
@@ -199,3 +200,4 @@ def order(request):
     }
 
     return render(request, 'main/order.html', context=data)
+ #  TODO
