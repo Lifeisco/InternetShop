@@ -3,15 +3,19 @@ from unicodedata import category
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from main.models import Category, Item, Order, OrderItem
+from rest_framework.viewsets import ModelViewSet
+
+from main.models import Category, Item, Order, OrderItem, ItemsInStorage
 from datetime import datetime
 
+from main.serializers import StorageSerializer
 
-# TODO django rest framework drf api endpoints(покажи каталог товара + координаты --> показывается каталог товара с ближ по коорд склада )
 
+# 1) TODO django rest framework api endpoints(покажи каталог товара + координаты -->
+#       показывается каталог товаров с ближ по коорд склада )
 
-# TODO настоить сайт на работу без перезагрузки страницы(AJAX запросы)
-# TODO несколько фото на один товар
+# 2) TODO настоить сайт на работу без перезагрузки страницы(AJAX запросы)
+# 3) TODO несколько фото на один товар
 
 
 def index(request):
@@ -200,4 +204,11 @@ def order(request):
     }
 
     return render(request, 'main/order.html', context=data)
- #  TODO
+
+
+class StorageView(ModelViewSet):
+    queryset = ItemsInStorage.objects.all()
+    serializer_class = StorageSerializer
+
+
+    

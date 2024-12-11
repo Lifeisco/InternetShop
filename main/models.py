@@ -89,8 +89,14 @@ class Storage(models.Model):
     location_x = models.FloatField()
     location_y = models.FloatField()
 
+    def __str__(self):
+        return f'{self.location_x} : {self.location_y}'
+
 
 class ItemsInStorage(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     storage = models.ForeignKey(Storage, on_delete=models.CASCADE)
     stock = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.item} | Storage - {self.storage} | Amount - {self.stock}'
