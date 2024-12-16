@@ -10,7 +10,7 @@
             </a>
         <ul class="dropdown-menu">
             {% for category in all_categories %}
-                <li><a class="dropdown-item" href="{% url 'view_products_by_category' category.name %}">{{ category.name }}</a></li>
+                <li><a class="dropdown-item" href="{% url 'view_products_by_category' category.url %}">{{ category.name }}</a></li>
             {% endfor %}
         </ul>
     </li>
@@ -23,7 +23,7 @@
                 {% if category == "all" %}
                     <h1 class="display-4 fw-bolder">Результаты поиска</h1>
                 {% else %}
-                    <h1 class="display-4 fw-bolder">{{ category }}</h1>
+                    <h1 class="display-4 fw-bolder">{{ category.name }}</h1>
                 {% endif %}
             </div>
         </div>

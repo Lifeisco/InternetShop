@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from rest_framework.viewsets import ModelViewSet
 
-from main.models import Category, Item, Order, OrderItem, ItemsInStorage
+from main.models import Category, Item, Order, OrderItem, ItemsInStorage, Customer
 from datetime import datetime
 
 from main.serializers import StorageSerializer
@@ -68,6 +68,7 @@ def reg_page(request):
                                             request.POST.get("email"),
                                             request.POST.get("password"))
         new_user.save()
+        Customer.objects.create(user=new_user).save()
     data = {'all_categories': Category.objects.all()}
 
     return render(request, 'main/register.html', context=data)
@@ -78,13 +79,13 @@ def log_out(request):
     return redirect('/')
 
 
-def view_products_by_category(request, category_name):
+def view_products_by_category(request, category_url):
     search = request.GET.get("search", '')
     page = int(request.GET.get("page", 1))  # Текущая страница
     neXt = page - 1
     items_on_page = 4  # Кол-во товаров на странице
 
-    if category_name == 'all':
+    if category_url == 'all':
         category = 'all'
         if search:
             products = Item.objects.filter(name__contains=search)
@@ -93,7 +94,7 @@ def view_products_by_category(request, category_name):
         else:
             products = Item.objects.all()
     else:
-        category = get_object_or_404(Category, name=category_name)
+        category = get_object_or_404(Category, url=category_url)
         if search:
             products = Item.objects.filter(category=category, name__contains=search)
         else:
@@ -160,6 +161,7 @@ def cart(request):
 
 def order(request):
     if request.user.is_authenticated:
+        customer = Customer.objects.get(user=request.user)
         if request.method == 'POST':
             action = request.POST.get('action', False)
             if action == 'make_order':
@@ -172,7 +174,7 @@ def order(request):
                     for i in range(len(product)):
                         total_price += product[i].price * carT[str(product[i].id)]
 
-                    obj_order = Order.objects.create(customer=request.user, created_date=datetime.now(),
+                    obj_order = Order.objects.create(customer=customer, created_date=datetime.now(),
                                                          status='Pending', total_price=total_price)
 
                     for i in range(len(product)):
@@ -185,12 +187,12 @@ def order(request):
         order_id = request.GET.get('id', False)
         all_orders = False
         if order_id == 'all':
-            obj_order = Order.objects.filter(customer=request.user)
+            obj_order = Order.objects.filter(customer=customer)
             all_orders = True
         elif str(order_id).isdigit():
-            obj_order = Order.objects.filter(customer=request.user, id=order_id).last()
+            obj_order = Order.objects.filter(customer=customer, id=order_id).last()
         else:
-            obj_order = Order.objects.filter(customer=request.user).last()
+            obj_order = Order.objects.filter(customer=customer).last()
 
     else:
         data = {'error_message': 'Авторизуйтесь или зарегистрируйтесь, чтобы заказать'}
@@ -210,5 +212,3 @@ class StorageView(ModelViewSet):
     queryset = ItemsInStorage.objects.all()
     serializer_class = StorageSerializer
 
-
-    
