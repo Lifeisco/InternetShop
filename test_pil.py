@@ -1,9 +1,10 @@
-def test(**kwargs):
-    for key in kwargs:
-        print(f"{key} ==> {kwargs[key]}")
+import hashlib
 
-test(category="Мясные изделия", search="Фарш")
-print('___________________________________________')
+my_frst_input = input('Enter first hash data: ')
+my_secnd_input = input('Enter second hash data: ')
 
-data = {"category":"Мясные изделия", "search":"Фарш"}
-test(**data)
+hash_obj = hashlib.md5(my_frst_input.encode())
+hash_sec_obj = hashlib.md5(my_secnd_input.encode())
+
+print(hash_obj.hexdigest())
+print(hash_sec_obj.hexdigest())

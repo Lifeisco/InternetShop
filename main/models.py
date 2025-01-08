@@ -1,8 +1,5 @@
-from unicodedata import category
-
 from django.db import models
 from django.contrib.auth.models import User
-
 
 class Item(models.Model):
     name = models.CharField(max_length=255)
@@ -94,11 +91,12 @@ class CartItem(models.Model):
 
 
 class Storage(models.Model):
-    location_x = models.FloatField()
-    location_y = models.FloatField()
+    name = models.CharField(max_length=100, default='None')
+    address = models.CharField(max_length=200, default='None')
+    street = models.CharField(max_length=100, default='None')
 
     def __str__(self):
-        return f'{self.location_x} : {self.location_y}'
+        return f'{self.name} - {self.address}'
 
 
 class ItemsInStorage(models.Model):
@@ -108,3 +106,9 @@ class ItemsInStorage(models.Model):
 
     def __str__(self):
         return f'{self.item} | Storage - {self.storage} | Amount - {self.stock}'
+
+class ActivateCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=100)
+    created_date = models.DateTimeField()
+

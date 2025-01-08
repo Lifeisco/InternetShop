@@ -2,14 +2,10 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import path
-from rest_framework.routers import SimpleRouter
 
-from main.views import index, login_page, reg_page, log_out, view_products_by_category, cart, order, product, catalog, \
-    StorageView
+from main.views import index, login_page, reg_page, log_out, view_products_by_category, cart, order, product, catalog, activate_user
 
-router = SimpleRouter()
 
-router.register('api/item_in_storage', StorageView)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index),
@@ -21,7 +17,7 @@ urlpatterns = [
     path('category/<str:category_url>/', view_products_by_category, name='view_products_by_category'),
     path('cart/', cart, name='cart'),
     path('order/', order, name='order'),
-    path('product/', product, name='product')
+    path('product/', product, name='product'),
+    path('activate_user/', activate_user, name='activate_user')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns += router.urls

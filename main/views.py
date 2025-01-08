@@ -1,21 +1,12 @@
-from unicodedata import category
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from rest_framework.viewsets import ModelViewSet
-
-from main.models import Category, Item, Order, OrderItem, ItemsInStorage, Customer
+from main.models import Category, Item, Order, OrderItem, Customer
 from datetime import datetime
+from django.core.mail import send_mail
+import hashlib
 
-from main.serializers import StorageSerializer
-
-
-# 1) TODO django rest framework api endpoints(покажи каталог товара + координаты -->
-#       показывается каталог товаров с ближ по коорд склада )
-
-# 2) TODO настоить сайт на работу без перезагрузки страницы(AJAX запросы)
-# 3) TODO несколько фото на один товар
+from onlineshop import settings
 
 
 def index(request):
@@ -46,11 +37,11 @@ def product(request):
 
 def login_page(request):
     if request.method == 'POST':
-        username = request.POST.get('name')
+        username = request.POST.get('username')
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)  # Проверка, на пользователя в БД
-
+        #  TODO если юзер не активен, сообщаем ему код активации по емаил
         if user is not None:
             login(request, user)
             request.session['cart'] = {}
@@ -63,16 +54,63 @@ def login_page(request):
 
 
 def reg_page(request):
+    hash_code = ''
     if request.method == 'POST':
         new_user = User.objects.create_user(request.POST.get("name"),
                                             request.POST.get("email"),
-                                            request.POST.get("password"))
+                                            request.POST.get("password")
+                                            )
+        new_user.is_active = False
         new_user.save()
+        hash_code = hashlib.md5(new_user.username.encode()).hexdigest()
+        #  TODO  пользователь не активен
+        #  TODO  создать код(сам код должен быть не очевидный и не повторятся, использовать hash функцию)
+        #  TODO  отправить код на емаил в ссылке на view activate user
+        subject = new_user.username
+        message = (f'Привет {subject}! Рады видеть!\nПерейдите по ссылке, чтобы подтвердить ваш email адрес: '
+                   f' http://127.0.0.1:8000/activate_user/?code={hash_code}&user={subject}')
+        from_email = settings.EMAIL_HOST_USER
+        to_email = new_user.email
+        send_mail(
+            subject, # Имя пользователя
+            message, # Сообщение в email письме
+            from_email, # От кого пересылаем
+            [to_email], # email пользователя
+            fail_silently=False,
+        )
         Customer.objects.create(user=new_user).save()
-    data = {'all_categories': Category.objects.all()}
+    data = {'all_categories': Category.objects.all(),
+            'code': hash_code}
 
     return render(request, 'main/register.html', context=data)
 
+def activate_user(request):
+    code = request.GET.get("code", default='')
+    user = request.GET.get("user", default='')
+
+    hash_code = hashlib.md5(user.encode()).hexdigest()
+
+    print(f'hash_code - {hash_code}\ncode - {code}')
+
+    if code == hash_code:
+        mess = "Вы успешно прошли регистрацию! Теперь ваш аккаунт активен"
+        user = User.objects.get(username=user)
+        user.is_active = True
+        user.save()
+    else:
+        mess = "Что то пошло не так, попробуйте снова"
+
+
+    data = {
+        'message': mess
+    }
+    #  TODO взять код активации с 67 строки кодом
+    #  TODO Активировать юзера, записанный в модели кода
+    #  TODO Удалить код
+    #  TODO Авторизовать юзера
+    #  TODO Вывести сообщение об успешной активации
+    #  TODO Если что то не так --> сообщить
+    return render(request, 'main/activating.html', context=data)
 
 def log_out(request):
     logout(request)
@@ -206,9 +244,3 @@ def order(request):
     }
 
     return render(request, 'main/order.html', context=data)
-
-
-class StorageView(ModelViewSet):
-    queryset = ItemsInStorage.objects.all()
-    serializer_class = StorageSerializer
-
