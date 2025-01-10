@@ -54,6 +54,7 @@ def login_page(request):
 
 
 def reg_page(request):
+
     hash_code = ''
     if request.method == 'POST':
         new_user = User.objects.create_user(request.POST.get("name"),
@@ -62,13 +63,11 @@ def reg_page(request):
                                             )
         new_user.is_active = False
         new_user.save()
-        hash_code = hashlib.md5(new_user.username.encode()).hexdigest()
-        #  TODO  пользователь не активен
-        #  TODO  создать код(сам код должен быть не очевидный и не повторятся, использовать hash функцию)
-        #  TODO  отправить код на емаил в ссылке на view activate user
+        hash_code = hashlib.md5(f'{new_user.username}{new_user.id}'.encode()).hexdigest()
+        #  TODO усложнить код(добавить еще id для геню. кода)
         subject = new_user.username
         message = (f'Привет {subject}! Рады видеть!\nПерейдите по ссылке, чтобы подтвердить ваш email адрес: '
-                   f' http://127.0.0.1:8000/activate_user/?code={hash_code}&user={subject}')
+                   f'http://127.0.0.1:8000/activate_user/?code={hash_code}&user={subject}')
         from_email = settings.EMAIL_HOST_USER
         to_email = new_user.email
         send_mail(
@@ -86,16 +85,19 @@ def reg_page(request):
 
 def activate_user(request):
     code = request.GET.get("code", default='')
-    user = request.GET.get("user", default='')
+    username = request.GET.get("user", default='')
 
-    hash_code = hashlib.md5(user.encode()).hexdigest()
+    user = User.objects.get(username=username)
+
+    hash_code = hashlib.md5(f'{username}{user.id}'.encode()).hexdigest()
+    #  TODO усложнить код(добавить еще id для геню. кода) тут тоже
 
     print(f'hash_code - {hash_code}\ncode - {code}')
 
     if code == hash_code:
         mess = "Вы успешно прошли регистрацию! Теперь ваш аккаунт активен"
-        user = User.objects.get(username=user)
-        user.is_active = True
+        user = User.objects.get(username=username)
+        user.is_active = True # Активация пользователя
         user.save()
     else:
         mess = "Что то пошло не так, попробуйте снова"
@@ -104,12 +106,6 @@ def activate_user(request):
     data = {
         'message': mess
     }
-    #  TODO взять код активации с 67 строки кодом
-    #  TODO Активировать юзера, записанный в модели кода
-    #  TODO Удалить код
-    #  TODO Авторизовать юзера
-    #  TODO Вывести сообщение об успешной активации
-    #  TODO Если что то не так --> сообщить
     return render(request, 'main/activating.html', context=data)
 
 def log_out(request):
